@@ -20,7 +20,7 @@ public class ModifyMembershipController {
   private final ModifyMembershipUseCase modifyMembershipUseCase;
 
   @PutMapping(path = "/membership/{membershipId}")
-  public ResponseEntity<Membership> registerMembership(
+  public ResponseEntity<Membership> modifyMembership(
       @PathVariable String membershipId,
       @RequestBody ModifyMembershipRequest request
   ) {

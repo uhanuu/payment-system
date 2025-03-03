@@ -38,8 +38,8 @@ class FindMembershipControllerTest {
   @Test
   public void findMembershipById() throws Exception {
       // given
-    RegisterMembershipRequest request = new RegisterMembershipRequest("name", "email", "address", true);
-    Membership expect = registerMembershipController.registerMembership(request).getBody();
+    RegisterMembershipRequest setUpRequest = new RegisterMembershipRequest("name", "email", "address", true);
+    Membership expect = registerMembershipController.registerMembership(setUpRequest).getBody();
 
       // when then
     mockMvc.perform(
