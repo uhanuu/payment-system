@@ -1,6 +1,7 @@
 package com.htwo.membershipservice.adapter.out.persistence;
 
 import com.htwo.membershipservice.application.port.out.FindMembershipPort;
+import com.htwo.membershipservice.application.port.out.ModifyMembershipPort;
 import com.htwo.membershipservice.application.port.out.RegisterMembershipPort;
 import com.htwo.common.PersistenceAdapter;
 import com.htwo.membershipservice.domain.Membership.MembershipAddress;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class MembershipPersistenceAdapter implements RegisterMembershipPort, FindMembershipPort {
+public class MembershipPersistenceAdapter implements RegisterMembershipPort, FindMembershipPort, ModifyMembershipPort {
 
   private final MembershipJpaRepository membershipJpaRepository;
 
@@ -38,7 +39,29 @@ public class MembershipPersistenceAdapter implements RegisterMembershipPort, Fin
 
   @Override
   public MembershipJpaEntity searchMembership(MembershipId membershipId) {
+    return findByIdOrElseThrow(membershipId);
+  }
+
+  private MembershipJpaEntity findByIdOrElseThrow(MembershipId membershipId) {
     return membershipJpaRepository.findById(Long.parseLong(membershipId.getMembershipId()))
         .orElseThrow(RuntimeException::new);
+  }
+
+  @Override
+  public MembershipJpaEntity modifyMembership(
+      MembershipId membershipId,
+      MembershipName membershipName,
+      MembershipEmail membershipEmail,
+      MembershipAddress membershipAddress,
+      MembershipIsValid membershipIsValid,
+      MembershipIsCorp membershipIsCorp
+  ) {
+    MembershipJpaEntity membershipJpaEntity = findByIdOrElseThrow(membershipId);
+    membershipJpaEntity.updateName(membershipName.getNameValue());
+    membershipJpaEntity.updateEmail(membershipEmail.getEmailValue());
+    membershipJpaEntity.updateAddress(membershipAddress.getAddressValue());
+    membershipJpaEntity.updateValid(membershipIsValid.isValidValue());
+    membershipJpaEntity.updateCorp(membershipIsCorp.isCorpValue());
+    return membershipJpaEntity;
   }
 }

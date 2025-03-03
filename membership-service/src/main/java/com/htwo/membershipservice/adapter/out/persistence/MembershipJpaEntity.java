@@ -40,6 +40,26 @@ public class MembershipJpaEntity {
     this.isCorp = isCorp;
   }
 
+  public void updateName(String name) {
+    this.name = name;
+  }
+
+  public void updateEmail(String email) {
+    this.email = email;
+  }
+
+  public void updateAddress(String address) {
+    this.address = address;
+  }
+
+  public void updateValid(boolean valid) {
+    isValid = valid;
+  }
+
+  public void updateCorp(boolean corp) {
+    isCorp = corp;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
