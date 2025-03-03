@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@WebAdapter("/api/v1")
+@WebAdapter(path = "/api/v1")
 @RequiredArgsConstructor
 public class FindMembershipController {
 
