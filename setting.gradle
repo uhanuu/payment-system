@@ -1,2 +1,3 @@
 rootProject.name = 'haenpay'
-include 'membership-service'  // 하위 모듈 등록
+include 'membership-service'
+include 'common'
