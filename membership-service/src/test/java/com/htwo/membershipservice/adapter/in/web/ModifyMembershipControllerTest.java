@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.htwo.membershipservice.adapter.out.persistence.MembershipJpaRepository;
 import com.htwo.membershipservice.domain.Membership;
 import com.htwo.membershipservice.domain.Membership.MembershipAddress;
 import com.htwo.membershipservice.domain.Membership.MembershipEmail;
@@ -11,6 +12,7 @@ import com.htwo.membershipservice.domain.Membership.MembershipId;
 import com.htwo.membershipservice.domain.Membership.MembershipIsCorp;
 import com.htwo.membershipservice.domain.Membership.MembershipIsValid;
 import com.htwo.membershipservice.domain.Membership.MembershipName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,13 @@ class ModifyMembershipControllerTest {
   private RegisterMembershipController registerMembershipController;
   @Autowired
   private FindMembershipController findMembershipController;
+  @Autowired
+  private MembershipJpaRepository membershipJpaRepository;
+
+  @BeforeEach
+  void setup(){
+    membershipJpaRepository.deleteAllInBatch();
+  }
 
   @Test
   public void modifyMembership() throws Exception {

@@ -20,6 +20,7 @@ public abstract class SelfValidating<T> {
    * Evaluates all Bean Validations on the attributes of this
    * instance.
    */
+  @SuppressWarnings("unchecked")
   protected void validateSelf() {
     Set<ConstraintViolation<T>> violations = validator.validate((T) this);
     if (!violations.isEmpty()) {

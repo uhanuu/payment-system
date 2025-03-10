@@ -12,6 +12,7 @@ import com.htwo.membershipservice.domain.Membership.MembershipId;
 import com.htwo.membershipservice.domain.Membership.MembershipIsCorp;
 import com.htwo.membershipservice.domain.Membership.MembershipIsValid;
 import com.htwo.membershipservice.domain.Membership.MembershipName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,13 @@ class FindMembershipControllerTest {
   private ObjectMapper mapper;
   @Autowired
   private RegisterMembershipController registerMembershipController;
+  @Autowired
+  private MembershipJpaRepository membershipJpaRepository;
+
+  @BeforeEach
+  void setup(){
+    membershipJpaRepository.deleteAllInBatch();
+  }
 
   @Test
   public void findMembershipById() throws Exception {
