@@ -1,0 +1,39 @@
+services:
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb-container
+    networks:
+      - haen_payment_service_network
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d:ro
+      - ./db/data:/var/lib/mysql
+      - ./db/log:/var/log/maria
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    env_file: .env
+    ports:
+      - "3306:3306"
+    environment:
+      - TZ=Asia/Seoul
+      - ALLOW_EMPTY_PASSWORD=no
+      - MARIADB_ROOT_PASSWORD=1234
+      - MARIADB_USER=root
+      - MARIADB_PASSWORD=1234
+    restart: always
+
+  membership-service:
+    image: haenpay-membership-service:1.0.1
+    networks:
+      - haen_payment_service_network
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mariadb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/haen_payment?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+
+networks:
+  haen_payment_service_network:
+    driver: bridge
