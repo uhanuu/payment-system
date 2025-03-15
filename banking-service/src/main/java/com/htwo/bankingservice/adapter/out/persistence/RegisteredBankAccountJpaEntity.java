@@ -2,6 +2,8 @@ package com.htwo.bankingservice.adapter.out.persistence;
 
 import com.htwo.bankingservice.domain.BankType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -22,6 +24,7 @@ public class RegisteredBankAccountJpaEntity {
   private Long registeredBankAccountId;
   private String membershipId;
   private String bankAccountNumber;
+  @Enumerated(EnumType.STRING)
   private BankType bankType;
   private boolean linkedStatusIsValid;
 

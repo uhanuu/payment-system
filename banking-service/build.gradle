@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.htwo.banking-service'
-version = '1.0.1'
+version = '1.0.2'
 
 repositories {
     gradlePluginPortal() //docker plugin

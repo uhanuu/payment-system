@@ -38,7 +38,7 @@ class RegisterBankAccountControllerTest {
   public void registerMembership() throws Exception {
     // given
     RegisterBankAccountRequest registerBankAccountRequest = new RegisterBankAccountRequest(
-        "1", "12345678", BankType.KB, true
+        "1", "12345678", "국민은행", true
     );
     // when then
     mockMvc.perform(
