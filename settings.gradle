@@ -2,3 +2,4 @@ rootProject.name = 'haenpay'
 
 include 'membership-service'
 include 'common'
+include 'banking-service'
