@@ -32,7 +32,7 @@ public class RegisterBankAccountService implements RegisterBankAccountUseCase {
 
   @Override
   public RegisteredBankAccount registerMembership(RegisterBankAccountCommand command) {
-    final GetBankAccountRequest bankAccountRequest = new GetBankAccountRequest(command.getBankType(), command.getBankAccountNumber());
+    final GetBankAccountRequest bankAccountRequest = new GetBankAccountRequest(command.getBankType().getName(), command.getBankAccountNumber());
     // TODO: 도메인 지식이 생기면 어떤걸 검증하는지 명확한 메서드 명으로 변경
     validationMemberId(command);
     validationBankAccount(bankAccountRequest);

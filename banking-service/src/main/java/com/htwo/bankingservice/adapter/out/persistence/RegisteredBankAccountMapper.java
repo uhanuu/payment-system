@@ -1,6 +1,5 @@
 package com.htwo.bankingservice.adapter.out.persistence;
 
-import com.htwo.bankingservice.domain.BankType;
 import com.htwo.bankingservice.domain.RegisteredBankAccount;
 import com.htwo.bankingservice.domain.RegisteredBankAccount.BankAccountNumber;
 import com.htwo.bankingservice.domain.RegisteredBankAccount.LinkedStatusIsValid;
