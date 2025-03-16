@@ -71,7 +71,7 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase {
         new ToBankType(command.getToBankType()),
         new ToBankAccountNumber(command.getToBankAccountNumber()),
         new MoneyAmount(moneyAmount),
-        new DomainFirmBankingStatus(FirmbankingStatus.REQUEST),
+        new DomainFirmBankingStatus(FirmbankingStatus.REQUESTED),
         firmbankingRequestUuid
     );
   }

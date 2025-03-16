@@ -50,6 +50,21 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MariaDBDialect
 
+  money-service:
+    image: haenpay-money-service:1.0.0
+    networks:
+      - haen_payment_service_network
+    ports:
+      - "8083:8080"
+    depends_on:
+      - mariadb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/haen_payment?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MariaDBDialect
+
 networks:
   haen_payment_service_network:
     driver: bridge

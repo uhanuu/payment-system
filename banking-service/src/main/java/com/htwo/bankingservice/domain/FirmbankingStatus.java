@@ -4,10 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum FirmbankingStatus {
-  REQUEST("요청"),
+  REQUESTED("요청됨"),
+  PROCESSING("처리 중"),
   COMPLETED("완료"),
   FAILED("실패"),
-  CANCELED("취소");
+  CANCELED("취소됨");
 
   private final String description;
 
