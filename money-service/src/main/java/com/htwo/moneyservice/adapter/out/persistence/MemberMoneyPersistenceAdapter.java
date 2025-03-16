@@ -2,7 +2,6 @@ package com.htwo.moneyservice.adapter.out.persistence;
 
 import com.htwo.common.PersistenceAdapter;
 import com.htwo.moneyservice.application.port.out.MemberMoneyPort;
-import com.htwo.moneyservice.domain.MemberMoney.Balance;
 import com.htwo.moneyservice.domain.MemberMoney.MembershipId;
 import com.htwo.moneyservice.domain.Money;
 import lombok.RequiredArgsConstructor;
@@ -16,27 +15,26 @@ public class MemberMoneyPersistenceAdapter implements MemberMoneyPort {
   private final MemberMoneyJpaRepository memberMoneyJpaRepository;
 
   @Override
-  @Transactional // 변경감지를 위해서도 그렇고 service 단에서 @Transactional이 존재하면 외부 API 트랜잭션 제거하기 힘들어짐...
+  @Transactional // service 단에서 @Transactional이 존재하면 외부 API 트랜잭션 제거하기 힘들어짐...
   public MemberMoneyJpaEntity increaseMemberMoney(
       MembershipId membershipId,
       Money increaseMoneyAmount
   ) {
+    // TODO: status 값도 같이 수정해주기
     final MemberMoneyJpaEntity memberMoneyJpaEntity = memberMoneyJpaRepository.findByMembershipId(
         membershipId.membershipId()
-    ).orElseGet(() -> createAndSaveMemberMoney(membershipId.membershipId()));
+    ).orElseGet(() -> createMemberMoney(membershipId.membershipId()));
 
     final Money balance = memberMoneyJpaEntity.getBalance().add(increaseMoneyAmount);
     memberMoneyJpaEntity.updateBalance(balance);
 
-    return memberMoneyJpaEntity;
+    return memberMoneyJpaRepository.save(memberMoneyJpaEntity); // 변경감지 안하고 update 될 수 있게 처리
   }
 
-  private MemberMoneyJpaEntity createAndSaveMemberMoney(String membershipId) {
-    final MemberMoneyJpaEntity createMemberMoney = MemberMoneyJpaEntity.builder()
+  private MemberMoneyJpaEntity createMemberMoney(String membershipId) {
+    return MemberMoneyJpaEntity.builder()
         .membershipId(membershipId)
         .balance(Money.ZERO())
         .build();
-
-    return memberMoneyJpaRepository.save(createMemberMoney);
   }
 }
