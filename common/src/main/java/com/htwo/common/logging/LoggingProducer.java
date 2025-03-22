@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LoggingProducer {
+
   private final KafkaProducer<String, String> producer;
   private final String topic;
+
   public LoggingProducer(
       @Value("${kafka.clusters.bootstrapservers}")
       String bootstrapServers,

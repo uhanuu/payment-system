@@ -13,11 +13,11 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 @RequiredArgsConstructor
 public class LoggerInterceptor implements HandlerInterceptor {
+
   private static final String REQUEST_ID = "request_id";
   private final LoggingProducer loggingProducer;
   @Value("${spring.application.name}")
   private String applicationName;
-
 
   @Override
   public boolean preHandle(
