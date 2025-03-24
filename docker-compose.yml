@@ -53,6 +53,7 @@ services:
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MariaDBDialect
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=payment.logging.out.stdout
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080/api/v1
 
   money-service:
     image: haenpay-money-service:1.0.0
