@@ -1,11 +1,11 @@
 package com.htwo.moneyservice.application.service;
 
 import com.htwo.common.UseCase;
-import com.htwo.moneyservice.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.htwo.moneyservice.adapter.out.persistence.MoneyChangingRequestJpaEntity;
 import com.htwo.moneyservice.adapter.out.persistence.MoneyChangingRequestMapper;
 import com.htwo.moneyservice.application.port.in.IncreaseMoneyRequestCommand;
 import com.htwo.moneyservice.application.port.in.IncreaseMoneyRequestUseCase;
+import com.htwo.moneyservice.application.port.out.GetMembershipPort;
 import com.htwo.moneyservice.application.port.out.MemberMoneyPort;
 import com.htwo.moneyservice.application.port.out.MoneyChangingRequestPort;
 import com.htwo.moneyservice.domain.ChangingMoneyStatus;
@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase {
 
+  private final GetMembershipPort getMembershipPort;
   private final MoneyChangingRequestPort moneyChangingRequestPort;
   private final MemberMoneyPort memberMoneyPort;
   private final MoneyChangingRequestMapper mapper;
@@ -38,6 +39,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
     final UUID moneyChangingRequestUuid = UUID.randomUUID();
     final Money moneyAmount = new Money(command.getMoneyAmount());
 
+    getMembershipPort.getMembership(command.getTargetMembershipId());
     log.info("[{}] increase member money", moneyChangingRequestUuid);
     memberMoneyPort.increaseMemberMoney(
         new MembershipId(command.getTargetMembershipId()), moneyAmount
@@ -53,4 +55,5 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
     );
     return mapper.mapToDomainEntity(moneyChangingRequest);
   }
+
 }
