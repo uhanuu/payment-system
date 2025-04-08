@@ -33,6 +33,10 @@ subprojects { // 모든 하위 모듈들에 이 설정을 적용합니다.
         mavenCentral()
     }
 
+    ext {
+        axonVersion = '4.9.1'
+    }
+
     dependencies {
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'

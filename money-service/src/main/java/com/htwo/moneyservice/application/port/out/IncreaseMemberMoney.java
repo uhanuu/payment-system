@@ -4,7 +4,7 @@ import com.htwo.moneyservice.adapter.out.persistence.MemberMoneyJpaEntity;
 import com.htwo.moneyservice.domain.MemberMoney.MembershipId;
 import com.htwo.moneyservice.domain.Money;
 
-public interface MemberMoneyPort {
+public interface IncreaseMemberMoney {
   MemberMoneyJpaEntity increaseMemberMoney(
       MembershipId memberId,
       Money increaseMoneyAmount

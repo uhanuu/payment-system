@@ -14,6 +14,7 @@ public class MemberMoney {
   private final String membershipId;
   // 잔액
   private final Money balance;
+  private final String moneyAggregateIdentifier;
   // TODO: 따로 linkedBankAccount 구현하기
   // private final boolean linkedBankAccount;
 
@@ -21,22 +22,26 @@ public class MemberMoney {
   private MemberMoney(
       String memberMoneyId,
       String membershipId,
-      Money balance
+      Money balance,
+      String moneyAggregateIdentifier
   ) {
     this.memberMoneyId = memberMoneyId;
     this.membershipId = membershipId;
     this.balance = balance;
+    this.moneyAggregateIdentifier = moneyAggregateIdentifier;
   }
 
   public static MemberMoney generateMemberMoney(
       MemberMoneyId memberMoneyId,
       MembershipId membershipId,
-      Balance balance
+      Balance balance,
+      MoneyAggregateIdentifier moneyAggregateIdentifier
   ) {
     return MemberMoney.builder()
         .memberMoneyId(memberMoneyId.memberMoneyId)
         .membershipId(membershipId.membershipId)
         .balance(balance.balance)
+        .moneyAggregateIdentifier(moneyAggregateIdentifier.moneyAggregateIdentifier)
         .build();
   }
 
@@ -47,6 +52,9 @@ public class MemberMoney {
   }
 
   public record Balance(Money balance) {
+  }
+
+  public record MoneyAggregateIdentifier(String moneyAggregateIdentifier) {
   }
 
 }

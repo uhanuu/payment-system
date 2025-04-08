@@ -1,11 +1,12 @@
 package com.htwo.moneyservice.adapter.in.web;
 
 import com.htwo.common.WebAdapter;
+import com.htwo.moneyservice.application.port.in.CreateMemberMoneyRequestCommand;
+import com.htwo.moneyservice.application.port.in.CreateMemberMoneyRequestUseCase;
 import com.htwo.moneyservice.application.port.in.IncreaseMoneyRequestCommand;
 import com.htwo.moneyservice.application.port.in.IncreaseMoneyRequestUseCase;
-import com.htwo.moneyservice.domain.MoneyChangingRequest;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,18 +15,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class RequestMoneyChangingController {
 
   private final IncreaseMoneyRequestUseCase increaseMoneyRequestUseCase;
-//  private final DecreaseMoneyRequestUseCase decreaseMoneyRequestUseCase;
+  private final CreateMemberMoneyRequestUseCase createMemberMoneyRequestUseCase;
 
   @PostMapping(path = "/money/increase")
-  public ResponseEntity<MoneyChangingResultDetails> increaseMoneyRequest(@RequestBody IncreaseMoneyChangingRequest request) {
+  public void increaseMoneyRequest(@RequestBody IncreaseMoneyChangingRequest request) {
     final IncreaseMoneyRequestCommand command = IncreaseMoneyRequestCommand.builder()
         .targetMembershipId(request.targetMembershipId())
         .moneyAmount(request.moneyAmount())
+        .aggregateIdentifier(UUID.randomUUID().toString())
         .build();
 
-    MoneyChangingRequest moneyChangingRequest = increaseMoneyRequestUseCase.increaseMoneyRequest(command);
-
-    return ResponseEntity.ok(MoneyChangingResultDetails.from(moneyChangingRequest));
+    increaseMoneyRequestUseCase.increaseMoneyRequest(command);
   }
 
+  @PostMapping("/money")
+  void createMemberMoney(@RequestBody CreateMemberMoneyRequest request) {
+    CreateMemberMoneyRequestCommand command = CreateMemberMoneyRequestCommand.builder()
+        .targetMembershipId(request.targetMembershipId())
+        .build();
+
+    createMemberMoneyRequestUseCase.createMoney(command);
+  }
 }

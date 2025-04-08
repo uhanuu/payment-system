@@ -27,19 +27,26 @@ public class MemberMoneyJpaEntity {
   private String membershipId;
   @Embedded
   private Money balance;
+  private String aggregateIdentifier;
 
   @Builder
   private MemberMoneyJpaEntity(
       String membershipId,
-      Money balance
+      Money balance,
+      String aggregateIdentifier
   ) {
     this.membershipId = membershipId;
     this.balance = balance;
+    this.aggregateIdentifier = aggregateIdentifier;
   }
 
   public void updateBalance(Money balance) {
     this.balance = balance;
   }
+  public void incrementBalance(Money incrementBalance) {
+    this.balance = balance.add(incrementBalance);
+  }
+
 
   @Override
   public boolean equals(Object o) {
