@@ -58,6 +58,10 @@ public final class Money {
     return this.moneyAmount.compareTo(other.moneyAmount) == 0;
   }
 
+  public String toStringValue() {
+    return this.moneyAmount.toString();
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

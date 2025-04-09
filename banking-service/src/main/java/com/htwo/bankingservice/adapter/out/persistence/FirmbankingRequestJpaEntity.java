@@ -36,6 +36,7 @@ public class FirmbankingRequestJpaEntity {
   @Enumerated(EnumType.STRING)
   private FirmbankingStatus firmBankingStatus;
   private String firmbankingRequestUuid;
+  private String aggregateIdentifier;
 
   @Builder
   private FirmbankingRequestJpaEntity(
@@ -45,7 +46,8 @@ public class FirmbankingRequestJpaEntity {
       String toBankAccountNumber,
       Money moneyAmount,
       FirmbankingStatus firmBankingStatus,
-      String firmbankingRequestUuid
+      String firmbankingRequestUuid,
+      String aggregateIdentifier
   ) {
     this.fromBankType = fromBankType;
     this.fromBankAccountNumber = fromBankAccountNumber;
@@ -54,6 +56,7 @@ public class FirmbankingRequestJpaEntity {
     this.moneyAmount = moneyAmount;
     this.firmBankingStatus = firmBankingStatus;
     this.firmbankingRequestUuid = firmbankingRequestUuid;
+    this.aggregateIdentifier = aggregateIdentifier;
   }
 
   public void updateFirmBankingStatus(FirmbankingStatus firmBankingStatus) {

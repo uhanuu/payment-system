@@ -1,6 +1,7 @@
 package com.htwo.bankingservice.application.port.out;
 
 import com.htwo.bankingservice.adapter.out.persistence.FirmbankingRequestJpaEntity;
+import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FirmBankingRequestId;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankAccountNumber;
@@ -19,7 +20,8 @@ public interface RequestFirmbankingPort {
       ToBankAccountNumber toBankAccountNumber,
       MoneyAmount moneyAmount,
       DomainFirmBankingStatus firmBankingStatus,
-      UUID firmbankingRequestUuid
+      UUID firmbankingRequestUuid,
+      AggregateIdentifier aggregateIdentifier
   );
 
   FirmbankingRequestJpaEntity modifyRequestFirmbankingStatus(FirmbankingRequestJpaEntity updateFirmbankingRequestJpaEntity);

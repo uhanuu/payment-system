@@ -1,6 +1,7 @@
 package com.htwo.bankingservice.adapter.out.persistence;
 
 import com.htwo.bankingservice.application.port.out.RequestFirmbankingPort;
+import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankAccountNumber;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankType;
@@ -25,7 +26,8 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
       ToBankAccountNumber toBankAccountNumber,
       MoneyAmount moneyAmount,
       DomainFirmBankingStatus firmBankingStatus,
-      UUID firmbankingRequestUuid
+      UUID firmbankingRequestUuid,
+      AggregateIdentifier aggregateIdentifier
   ) {
     final FirmbankingRequestJpaEntity firmBankingRequestJpaEntity = FirmbankingRequestJpaEntity.builder()
         .fromBankType(fromBankType.fromBankType())
@@ -35,6 +37,7 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
         .moneyAmount(moneyAmount.moneyAmount())
         .firmBankingStatus(firmBankingStatus.firmBankingStatus())
         .firmbankingRequestUuid(firmbankingRequestUuid.toString())
+        .aggregateIdentifier(aggregateIdentifier.aggregateIdentifier())
         .build();
 
     return requestFirmBankingJpaRepository.save(firmBankingRequestJpaEntity);

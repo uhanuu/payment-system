@@ -15,6 +15,7 @@ public class FirmbankingRequest {
   private final Money moneyAmount;
   private final FirmbankingStatus firmBankingStatus;
   private final String firmbankingRequestUuid;
+  private final String aggregateIdentifier;
 
   @Builder(access = AccessLevel.PRIVATE)
   private FirmbankingRequest(
@@ -25,7 +26,8 @@ public class FirmbankingRequest {
       String toBankAccountNumber,
       Money moneyAmount,
       FirmbankingStatus firmBankingStatus,
-      String firmbankingRequestUuid
+      String firmbankingRequestUuid,
+      String aggregateIdentifier
   ) {
     this.firmBankingRequestId = firmBankingRequestId;
     this.fromBankType = fromBankType;
@@ -35,6 +37,7 @@ public class FirmbankingRequest {
     this.moneyAmount = moneyAmount;
     this.firmBankingStatus = firmBankingStatus;
     this.firmbankingRequestUuid = firmbankingRequestUuid;
+    this.aggregateIdentifier = aggregateIdentifier;
   }
 
 
@@ -46,7 +49,8 @@ public class FirmbankingRequest {
       ToBankAccountNumber toBankAccountNumber,
       MoneyAmount moneyAmount,
       DomainFirmBankingStatus firmBankingStatus,
-      FirmbankingRequestUuid firmbankingRequestUuid
+      FirmbankingRequestUuid firmbankingRequestUuid,
+      AggregateIdentifier aggregateIdentifier
   ) {
     return FirmbankingRequest.builder()
         .firmBankingRequestId(firmBankingRequestId.firmBankingRequestId)
@@ -57,6 +61,7 @@ public class FirmbankingRequest {
         .moneyAmount(moneyAmount.moneyAmount)
         .firmBankingStatus(firmBankingStatus.firmBankingStatus)
         .firmbankingRequestUuid(firmbankingRequestUuid.firmbankingRequestUuid)
+        .aggregateIdentifier(aggregateIdentifier.aggregateIdentifier)
         .build();
   }
 
@@ -82,6 +87,9 @@ public class FirmbankingRequest {
   }
 
   public record FirmbankingRequestUuid(String firmbankingRequestUuid) {
+  }
+
+  public record AggregateIdentifier(String aggregateIdentifier) {
   }
 
 }

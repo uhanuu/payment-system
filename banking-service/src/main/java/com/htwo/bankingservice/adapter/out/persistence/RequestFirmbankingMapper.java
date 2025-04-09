@@ -1,6 +1,7 @@
 package com.htwo.bankingservice.adapter.out.persistence;
 
 import com.htwo.bankingservice.domain.FirmbankingRequest;
+import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FirmBankingRequestId;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FirmbankingRequestUuid;
@@ -24,7 +25,8 @@ public class RequestFirmbankingMapper {
         new ToBankAccountNumber(firmBankingRequestJpaEntity.getToBankAccountNumber()),
         new MoneyAmount(firmBankingRequestJpaEntity.getMoneyAmount()),
         new DomainFirmBankingStatus(firmBankingRequestJpaEntity.getFirmBankingStatus()),
-        new FirmbankingRequestUuid(firmBankingRequestJpaEntity.getFirmbankingRequestUuid())
+        new FirmbankingRequestUuid(firmBankingRequestJpaEntity.getFirmbankingRequestUuid()),
+        new AggregateIdentifier(firmBankingRequestJpaEntity.getAggregateIdentifier())
     );
   }
 

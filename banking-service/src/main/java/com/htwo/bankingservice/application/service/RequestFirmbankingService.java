@@ -1,6 +1,7 @@
 package com.htwo.bankingservice.application.service;
 
 
+import com.htwo.bankingservice.adapter.axon.command.CreateRequestFirmBankingCommand;
 import com.htwo.bankingservice.adapter.out.external.bank.ExternalFirmbankingRequest;
 import com.htwo.bankingservice.adapter.out.external.bank.FirmbankingResult;
 import com.htwo.bankingservice.adapter.out.persistence.FirmbankingRequestJpaEntity;
@@ -10,6 +11,7 @@ import com.htwo.bankingservice.application.port.in.RequestFirmbankingUseCase;
 import com.htwo.bankingservice.application.port.out.RequestExternalFirmbankingPort;
 import com.htwo.bankingservice.application.port.out.RequestFirmbankingPort;
 import com.htwo.bankingservice.domain.FirmbankingRequest;
+import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankAccountNumber;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankType;
@@ -22,6 +24,7 @@ import com.htwo.common.UseCase;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -32,36 +35,53 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase {
 
   private final RequestFirmbankingPort requestFirmbankingPort;
   private final RequestExternalFirmbankingPort requestExternalFirmbankingPort;
+  private final CommandGateway commandGateway;
   private final RequestFirmbankingMapper mapper;
 
   @Override
-  public FirmbankingRequest requestFirmBanking(RequestFirmbankingCommand command) {
-    final UUID firmbankingRequestUuid = UUID.randomUUID();
-    final FirmbankingRequestJpaEntity saveRequestFirmbankingJpaEntity = saveRequestFormBanking(
-        command, firmbankingRequestUuid
-    );
+  public void requestFirmBanking(RequestFirmbankingCommand command) {
+    Money money = new Money(command.getMoneyAmount());
+    CreateRequestFirmBankingCommand createRequestFirmBankingCommand = CreateRequestFirmBankingCommand.builder()
+        .fromBankType(command.getFromBankType())
+        .fromBankAccountNumber(command.getFromBankAccountNumber())
+        .toBankType(command.getToBankType())
+        .toBankAccountNumber(command.getToBankAccountNumber())
+        .moneyAmount(money.toStringValue())
+        .build();
 
-    // TODO: 외부 API CALL 트랜잭션 분리
-    log.info("[{}] API call external firmbanking request", firmbankingRequestUuid);
-    FirmbankingResult firmbankingResult = requestExternalFirmbanking(command);
-    // TODO: 하드 코딩 제거
-    if ("success".equals(firmbankingResult.resultCode())) {
-      log.info("[{}] completed external firmbanking", firmbankingRequestUuid);
-      saveRequestFirmbankingJpaEntity.updateFirmBankingStatus(FirmbankingStatus.COMPLETED);
-    } else {
-      log.error("[{}] failed external firmbanking", firmbankingRequestUuid);
-      saveRequestFirmbankingJpaEntity.updateFirmBankingStatus(FirmbankingStatus.FAILED);
-    }
+    commandGateway.send(createRequestFirmBankingCommand)
+        .whenComplete(
+            (result, throwable) -> {
+              if (throwable != null) {
+                log.error("throwable={}", throwable.getMessage());
+                throw new RuntimeException(throwable);
+              }
+              UUID firmbankingRequestUuid = UUID.randomUUID();
+              final FirmbankingRequestJpaEntity saveRequestFirmbankingJpaEntity = saveRequestFormBanking(
+                  command, firmbankingRequestUuid, result.toString()
+              );
+              // TODO: 외부 API CALL 트랜잭션 분리
+              log.info("[{}] API call external firmbanking request", firmbankingRequestUuid);
+              FirmbankingResult firmbankingResult = requestExternalFirmbanking(command);
 
-    final FirmbankingRequestJpaEntity modifyRequestFirmbankingJpaEntity = requestFirmbankingPort.modifyRequestFirmbankingStatus(
-        saveRequestFirmbankingJpaEntity
-    );
-    return mapper.mapToDomainEntity(modifyRequestFirmbankingJpaEntity);
+              // TODO: 하드 코딩 제거
+              if ("success".equals(firmbankingResult.resultCode())) {
+                log.info("[{}] completed external firmbanking", firmbankingRequestUuid);
+                saveRequestFirmbankingJpaEntity.updateFirmBankingStatus(FirmbankingStatus.COMPLETED);
+              } else {
+                log.error("[{}] failed external firmbanking", firmbankingRequestUuid);
+                saveRequestFirmbankingJpaEntity.updateFirmBankingStatus(FirmbankingStatus.FAILED);
+              }
+
+              requestFirmbankingPort.modifyRequestFirmbankingStatus(saveRequestFirmbankingJpaEntity);
+            }
+        );
   }
 
   private FirmbankingRequestJpaEntity saveRequestFormBanking(
       RequestFirmbankingCommand command,
-      UUID firmbankingRequestUuid
+      UUID firmbankingRequestUuid,
+      String aggregateIdentifier
   ) {
     final Money moneyAmount = new Money(command.getMoneyAmount());
 
@@ -72,7 +92,8 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase {
         new ToBankAccountNumber(command.getToBankAccountNumber()),
         new MoneyAmount(moneyAmount),
         new DomainFirmBankingStatus(FirmbankingStatus.REQUESTED),
-        firmbankingRequestUuid
+        firmbankingRequestUuid,
+        new AggregateIdentifier(aggregateIdentifier)
     );
   }
 

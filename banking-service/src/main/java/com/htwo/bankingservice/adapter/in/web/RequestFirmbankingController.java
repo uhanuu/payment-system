@@ -17,7 +17,7 @@ public class RequestFirmbankingController {
   private final RequestFirmbankingUseCase requestFirmBankingUseCase;
 
   @PostMapping(path = "/banking/firm-banking")
-  public ResponseEntity<FirmbankingRequest> requestFirmBanking(
+  public void requestFirmBanking(
       @RequestBody RequestFirmbankingRequest request
   ) {
     final BankType fromBankType = BankType.getBankType(request.fromBankName());
@@ -31,6 +31,6 @@ public class RequestFirmbankingController {
         .moneyAmount(request.moneyAmount())
         .build();
 
-    return ResponseEntity.ok(requestFirmBankingUseCase.requestFirmBanking(command));
+    requestFirmBankingUseCase.requestFirmBanking(command);
   }
 }
