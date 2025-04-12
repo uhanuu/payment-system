@@ -58,6 +58,11 @@ services:
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=payment.logging.out.stdout
       - SERVICE_MEMBERSHIP_URL=http://membership-service:8080/api/v1
+      # JPA 설정
+      - SPRING_JPA_OPEN-IN-VIEW=false
+      - SPRING_JPA_SHOW-SQL=true
+      - SPRING_JPA_HIBERNATE_DDL-AUTO=create
+      - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
 
   money-service:
     image: haenpay-money-service:1.0.0

@@ -40,6 +40,7 @@ public class FirmbankingRequestJpaEntity {
 
   @Builder
   private FirmbankingRequestJpaEntity(
+      Long firmBankingRequestId,
       BankType fromBankType,
       String fromBankAccountNumber,
       BankType toBankType,
@@ -49,6 +50,7 @@ public class FirmbankingRequestJpaEntity {
       String firmbankingRequestUuid,
       String aggregateIdentifier
   ) {
+    this.firmBankingRequestId = firmBankingRequestId;
     this.fromBankType = fromBankType;
     this.fromBankAccountNumber = fromBankAccountNumber;
     this.toBankType = toBankType;

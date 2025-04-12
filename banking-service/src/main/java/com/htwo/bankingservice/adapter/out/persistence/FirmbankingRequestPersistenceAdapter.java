@@ -1,6 +1,8 @@
 package com.htwo.bankingservice.adapter.out.persistence;
 
+import com.htwo.bankingservice.application.port.out.FindRequestFirmbankingPort;
 import com.htwo.bankingservice.application.port.out.RequestFirmbankingPort;
+import com.htwo.bankingservice.domain.FirmbankingRequest;
 import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankAccountNumber;
@@ -8,18 +10,20 @@ import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankType;
 import com.htwo.bankingservice.domain.FirmbankingRequest.MoneyAmount;
 import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankAccountNumber;
 import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankType;
+import com.htwo.bankingservice.domain.FirmbankingStatus;
 import com.htwo.common.PersistenceAdapter;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingPort {
+public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingPort, FindRequestFirmbankingPort {
 
   private final RequestFirmbankingJpaRepository requestFirmBankingJpaRepository;
+  private final RequestFirmbankingMapper mapper;
 
   @Override
-  public FirmbankingRequestJpaEntity createRequestFirmbanking(
+  public FirmbankingRequest createRequestFirmbanking(
       FromBankType fromBankType,
       FromBankAccountNumber fromBankAccountNumber,
       ToBankType toBankType,
@@ -40,14 +44,28 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
         .aggregateIdentifier(aggregateIdentifier.aggregateIdentifier())
         .build();
 
-    return requestFirmBankingJpaRepository.save(firmBankingRequestJpaEntity);
+    requestFirmBankingJpaRepository.save(firmBankingRequestJpaEntity);
+    return mapper.mapToDomainEntity(firmBankingRequestJpaEntity);
   }
 
   @Override
-  public FirmbankingRequestJpaEntity modifyRequestFirmbankingStatus(
-      FirmbankingRequestJpaEntity updateFirmbankingRequestJpaEntity
+  public FirmbankingRequest modifyRequestFirmbankingStatus(
+      FirmbankingRequest firmbankingRequest,
+      FirmbankingStatus updateFirmbankingStatus
   ) {
-    // TODO: Service 단에서 변경감지를 이용해서 처리할 수 있지만 핵사고날 아키텍처에 맞게 Port를 통해서 Update
-    return requestFirmBankingJpaRepository.save(updateFirmbankingRequestJpaEntity);
+    FirmbankingRequestJpaEntity firmbankingRequestJpaEntity = mapper.mapToJpaEntity(firmbankingRequest);
+    firmbankingRequestJpaEntity.updateFirmBankingStatus(updateFirmbankingStatus);
+    requestFirmBankingJpaRepository.save(firmbankingRequestJpaEntity);
+
+    return mapper.mapToDomainEntity(firmbankingRequestJpaEntity);
+  }
+
+  @Override
+  public FirmbankingRequest getFirmBankingRequest(AggregateIdentifier aggregateIdentifier) {
+    final FirmbankingRequestJpaEntity firmbankingRequestJpaEntity = requestFirmBankingJpaRepository.findByAggregateIdentifier(
+            aggregateIdentifier.aggregateIdentifier())
+        .orElseThrow(RuntimeException::new);
+
+    return mapper.mapToDomainEntity(firmbankingRequestJpaEntity);
   }
 }

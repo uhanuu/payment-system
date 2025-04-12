@@ -33,7 +33,7 @@ public class MemberMoneyAggregate {
 
   @CommandHandler
   public String handle(@NotNull IncreaseMoneyRequestCommand command) {
-    log.info("IncreaseMoneyRequestCommand create IncreaseMemberMoneyEvent");
+    log.info("IncreaseMoneyRequestCommand IncreaseMemberMoneyEvent");
     this.id = command.getAggregateIdentifier();
     apply(
         new IncreaseMemberMoneyEvent(

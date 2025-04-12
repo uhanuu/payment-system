@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 public class RequestFirmbankingMapper {
 
   public FirmbankingRequest mapToDomainEntity(FirmbankingRequestJpaEntity firmBankingRequestJpaEntity) {
-
     return FirmbankingRequest.generateFirmbankingRequest(
         new FirmBankingRequestId(String.valueOf(firmBankingRequestJpaEntity.getFirmBankingRequestId())),
         new FromBankType(firmBankingRequestJpaEntity.getFromBankType()),
@@ -28,6 +27,20 @@ public class RequestFirmbankingMapper {
         new FirmbankingRequestUuid(firmBankingRequestJpaEntity.getFirmbankingRequestUuid()),
         new AggregateIdentifier(firmBankingRequestJpaEntity.getAggregateIdentifier())
     );
+  }
+
+  public FirmbankingRequestJpaEntity mapToJpaEntity(FirmbankingRequest firmBankingRequestJpaEntity) {
+    return FirmbankingRequestJpaEntity.builder()
+        .firmBankingRequestId(Long.parseLong(firmBankingRequestJpaEntity.getFirmBankingRequestId()))
+        .fromBankType(firmBankingRequestJpaEntity.getFromBankType())
+        .fromBankAccountNumber(firmBankingRequestJpaEntity.getFromBankAccountNumber())
+        .toBankType(firmBankingRequestJpaEntity.getToBankType())
+        .toBankAccountNumber(firmBankingRequestJpaEntity.getToBankAccountNumber())
+        .moneyAmount(firmBankingRequestJpaEntity.getMoneyAmount())
+        .firmBankingStatus(firmBankingRequestJpaEntity.getFirmBankingStatus())
+        .firmbankingRequestUuid(firmBankingRequestJpaEntity.getFirmbankingRequestUuid())
+        .aggregateIdentifier(firmBankingRequestJpaEntity.getAggregateIdentifier())
+        .build();
   }
 
 }

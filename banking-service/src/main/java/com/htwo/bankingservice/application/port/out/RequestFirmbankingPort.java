@@ -1,19 +1,19 @@
 package com.htwo.bankingservice.application.port.out;
 
-import com.htwo.bankingservice.adapter.out.persistence.FirmbankingRequestJpaEntity;
+import com.htwo.bankingservice.domain.FirmbankingRequest;
 import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
-import com.htwo.bankingservice.domain.FirmbankingRequest.FirmBankingRequestId;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankAccountNumber;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankType;
 import com.htwo.bankingservice.domain.FirmbankingRequest.MoneyAmount;
 import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankAccountNumber;
 import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankType;
+import com.htwo.bankingservice.domain.FirmbankingStatus;
 import java.util.UUID;
 
 public interface RequestFirmbankingPort {
 
-  FirmbankingRequestJpaEntity createRequestFirmbanking(
+  FirmbankingRequest createRequestFirmbanking(
       FromBankType fromBankType,
       FromBankAccountNumber fromBankAccountNumber,
       ToBankType toBankType,
@@ -24,5 +24,9 @@ public interface RequestFirmbankingPort {
       AggregateIdentifier aggregateIdentifier
   );
 
-  FirmbankingRequestJpaEntity modifyRequestFirmbankingStatus(FirmbankingRequestJpaEntity updateFirmbankingRequestJpaEntity);
+  FirmbankingRequest modifyRequestFirmbankingStatus(
+      FirmbankingRequest firmbankingRequest,
+      FirmbankingStatus updateFirmbankingStatus
+  );
+
 }
