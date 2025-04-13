@@ -11,37 +11,42 @@ public class RegisteredBankAccount {
   private final String registeredBankAccountId;
   private final String membershipId;
   private final String bankAccountNumber;
-  private final BankType bankType;
+  private final String bankName;
   private final boolean linkedStatusIsValid;
+  private final String aggregateIdentifier;
 
   @Builder(access = AccessLevel.PRIVATE)
   private RegisteredBankAccount(
       String registeredBankAccountId,
       String membershipId,
       String bankAccountNumber,
-      BankType bankType,
-      boolean linkedStatusIsValid
+      String bankName,
+      boolean linkedStatusIsValid,
+      String aggregateIdentifier
   ) {
     this.registeredBankAccountId = registeredBankAccountId;
     this.membershipId = membershipId;
     this.bankAccountNumber = bankAccountNumber;
-    this.bankType = bankType;
+    this.bankName = bankName;
     this.linkedStatusIsValid = linkedStatusIsValid;
+    this.aggregateIdentifier = aggregateIdentifier;
   }
 
   public static RegisteredBankAccount generateBankAccount(
       RegisteredBankAccountId registeredBankAccountId,
       MembershipId membershipId,
       BankAccountNumber bankAccountNumber,
-      BankType bankType,
-      LinkedStatusIsValid linkedStatusIsValid
+      BankName bankName,
+      LinkedStatusIsValid linkedStatusIsValid,
+      AggregateIdentifier aggregateIdentifier
   ) {
     return RegisteredBankAccount.builder()
         .registeredBankAccountId(registeredBankAccountId.registeredBankAccount)
         .membershipId(membershipId.membershipId)
         .bankAccountNumber(bankAccountNumber.bankAccountNumber)
-        .bankType(bankType)
+        .bankName(bankName.bankName)
         .linkedStatusIsValid(linkedStatusIsValid.linkedStatusIsValid)
+        .aggregateIdentifier(aggregateIdentifier.aggregateIdentifier)
         .build();
   }
 
@@ -73,11 +78,29 @@ public class RegisteredBankAccount {
   }
 
   @Value
+  public static class BankName {
+    String bankName;
+
+    public BankName(String value) {
+      this.bankName = value;
+    }
+  }
+
+  @Value
   public static class LinkedStatusIsValid {
     boolean linkedStatusIsValid;
 
     public LinkedStatusIsValid(boolean value) {
       this.linkedStatusIsValid = value;
+    }
+  }
+
+  @Value
+  public static class AggregateIdentifier {
+    String aggregateIdentifier;
+
+    public AggregateIdentifier(String value) {
+      this.aggregateIdentifier = value;
     }
   }
 }

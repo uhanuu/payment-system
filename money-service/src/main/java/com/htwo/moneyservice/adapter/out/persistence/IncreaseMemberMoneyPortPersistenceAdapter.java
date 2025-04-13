@@ -2,7 +2,7 @@ package com.htwo.moneyservice.adapter.out.persistence;
 
 import com.htwo.common.PersistenceAdapter;
 import com.htwo.moneyservice.application.port.out.CreateMemberMoneyPort;
-import com.htwo.moneyservice.application.port.out.IncreaseMemberMoney;
+import com.htwo.moneyservice.application.port.out.IncreaseMemberMoneyPort;
 import com.htwo.moneyservice.domain.MemberMoney.MembershipId;
 import com.htwo.moneyservice.domain.MemberMoney.MoneyAggregateIdentifier;
 import com.htwo.moneyservice.domain.Money;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @PersistenceAdapter
 @Transactional // TODO: Service layer가 맞을까 Persist layer가 맞을까 고민해보자
 @RequiredArgsConstructor
-public class IncreaseMemberMoneyPersistenceAdapter implements IncreaseMemberMoney, CreateMemberMoneyPort {
+public class IncreaseMemberMoneyPortPersistenceAdapter implements IncreaseMemberMoneyPort, CreateMemberMoneyPort {
 
   private final MemberMoneyJpaRepository memberMoneyJpaRepository;
 

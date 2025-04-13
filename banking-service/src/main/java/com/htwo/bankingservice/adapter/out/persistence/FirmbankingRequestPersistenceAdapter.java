@@ -2,17 +2,19 @@ package com.htwo.bankingservice.adapter.out.persistence;
 
 import com.htwo.bankingservice.application.port.out.FindRequestFirmbankingPort;
 import com.htwo.bankingservice.application.port.out.RequestFirmbankingPort;
+import com.htwo.bankingservice.domain.BankType;
 import com.htwo.bankingservice.domain.FirmbankingRequest;
 import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
+import com.htwo.bankingservice.domain.FirmbankingRequest.FirmbankingRequestUuid;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankAccountNumber;
-import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankType;
+import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankName;
 import com.htwo.bankingservice.domain.FirmbankingRequest.MoneyAmount;
 import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankAccountNumber;
-import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankType;
+import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankName;
 import com.htwo.bankingservice.domain.FirmbankingStatus;
+import com.htwo.bankingservice.domain.Money;
 import com.htwo.common.PersistenceAdapter;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
@@ -24,23 +26,23 @@ public class FirmbankingRequestPersistenceAdapter implements RequestFirmbankingP
 
   @Override
   public FirmbankingRequest createRequestFirmbanking(
-      FromBankType fromBankType,
+      FromBankName fromBankName,
       FromBankAccountNumber fromBankAccountNumber,
-      ToBankType toBankType,
+      ToBankName toBankName,
       ToBankAccountNumber toBankAccountNumber,
       MoneyAmount moneyAmount,
       DomainFirmBankingStatus firmBankingStatus,
-      UUID firmbankingRequestUuid,
+      FirmbankingRequestUuid firmbankingRequestUuid,
       AggregateIdentifier aggregateIdentifier
   ) {
     final FirmbankingRequestJpaEntity firmBankingRequestJpaEntity = FirmbankingRequestJpaEntity.builder()
-        .fromBankType(fromBankType.fromBankType())
+        .fromBankType(BankType.getBankType(fromBankName.fromBankName()))
         .fromBankAccountNumber(fromBankAccountNumber.fromBankAccountNumber())
-        .toBankType(toBankType.toBankType())
+        .toBankType(BankType.getBankType(toBankName.toBankName()))
         .toBankAccountNumber(toBankAccountNumber.toBankAccountNumber())
-        .moneyAmount(moneyAmount.moneyAmount())
+        .moneyAmount(new Money(moneyAmount.moneyAmount()))
         .firmBankingStatus(firmBankingStatus.firmBankingStatus())
-        .firmbankingRequestUuid(firmbankingRequestUuid.toString())
+        .firmbankingRequestUuid(firmbankingRequestUuid.firmbankingRequestUuid())
         .aggregateIdentifier(aggregateIdentifier.aggregateIdentifier())
         .build();
 

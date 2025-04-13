@@ -3,9 +3,13 @@ package com.htwo.moneyservice.adapter.axon.aggregate;
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 import com.htwo.moneyservice.adapter.axon.command.CreateMemberMoneyCommand;
+import com.htwo.moneyservice.adapter.axon.command.RechargingMoneyRequestCreateCommand;
 import com.htwo.moneyservice.adapter.axon.event.IncreaseMemberMoneyEvent;
 import com.htwo.moneyservice.adapter.axon.event.MemberMoneyCreatedEvent;
+import com.htwo.moneyservice.adapter.axon.event.RechargingRequestCreatedEvent;
 import com.htwo.moneyservice.application.port.in.IncreaseMoneyRequestCommand;
+import com.htwo.moneyservice.application.port.out.GetRegisteredBankAccountPort;
+import com.htwo.moneyservice.application.port.out.RegisteredBankAccountAggregateIdentifier;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.NoArgsConstructor;
@@ -43,6 +47,29 @@ public class MemberMoneyAggregate {
         )
     );
     return id;
+  }
+
+  @CommandHandler
+  public void handle(
+      RechargingMoneyRequestCreateCommand command,
+      GetRegisteredBankAccountPort getRegisteredBankAccountPort
+  ) {
+    log.info("RechargingMoneyRequestCreateCommand command handler");
+    id = command.getAggregateIdentifier();
+
+    final RegisteredBankAccountAggregateIdentifier bankAccountAggregate = getRegisteredBankAccountPort.getRegisteredBankAccount(
+        command.getMembershipId()
+    );
+
+    log.info("saga start send RechargingRequestCreatedEvent");
+    apply(RechargingRequestCreatedEvent.builder()
+        .rechargingRequestId(command.getRechargingRequestId())
+        .membershipId(command.getMembershipId())
+        .amount(command.getAmount())
+        .bankingAccountAggregateIdentifier(bankAccountAggregate.getAggregateIdentifier())
+        .bankName(bankAccountAggregate.getBankName())
+        .bankAccountNumber(bankAccountAggregate.getBankAccountNumber())
+        .build());
   }
 
   @EventSourcingHandler

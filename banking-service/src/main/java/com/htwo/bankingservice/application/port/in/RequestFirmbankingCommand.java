@@ -1,6 +1,5 @@
 package com.htwo.bankingservice.application.port.in;
 
-import com.htwo.bankingservice.domain.BankType;
 import com.htwo.common.SelfValidating;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,11 +12,11 @@ import lombok.Getter;
 public class RequestFirmbankingCommand extends SelfValidating<RequestFirmbankingCommand> {
 
   @NotNull
-  private final BankType fromBankType;
+  private final String fromBankName;
   @NotBlank
   private final String fromBankAccountNumber;
   @NotNull
-  private final BankType toBankType;
+  private final String toBankName;
   @NotBlank
   private final String toBankAccountNumber;
   @NotBlank
@@ -25,15 +24,15 @@ public class RequestFirmbankingCommand extends SelfValidating<RequestFirmbanking
 
   @Builder
   private RequestFirmbankingCommand(
-      BankType fromBankType,
+      String fromBankName,
       String fromBankAccountNumber,
-      BankType toBankType,
+      String toBankName,
       String toBankAccountNumber,
       String moneyAmount
   ) {
-    this.fromBankType = fromBankType;
+    this.fromBankName = fromBankName;
     this.fromBankAccountNumber = fromBankAccountNumber;
-    this.toBankType = toBankType;
+    this.toBankName = toBankName;
     this.toBankAccountNumber = toBankAccountNumber;
     this.moneyAmount = moneyAmount;
 

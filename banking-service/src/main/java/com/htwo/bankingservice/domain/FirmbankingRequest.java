@@ -8,11 +8,11 @@ import lombok.Getter;
 public class FirmbankingRequest {
 
   private final String firmBankingRequestId;
-  private final BankType fromBankType;
+  private final String fromBankName;
   private final String fromBankAccountNumber;
-  private final BankType toBankType;
+  private final String toBankName;
   private final String toBankAccountNumber;
-  private final Money moneyAmount;
+  private final String moneyAmount;
   private final FirmbankingStatus firmBankingStatus;
   private final String firmbankingRequestUuid;
   private final String aggregateIdentifier;
@@ -20,19 +20,19 @@ public class FirmbankingRequest {
   @Builder(access = AccessLevel.PRIVATE)
   private FirmbankingRequest(
       String firmBankingRequestId,
-      BankType fromBankType,
+      String fromBankName,
       String fromBankAccountNumber,
-      BankType toBankType,
+      String toBankName,
       String toBankAccountNumber,
-      Money moneyAmount,
+      String moneyAmount,
       FirmbankingStatus firmBankingStatus,
       String firmbankingRequestUuid,
       String aggregateIdentifier
   ) {
     this.firmBankingRequestId = firmBankingRequestId;
-    this.fromBankType = fromBankType;
+    this.fromBankName = fromBankName;
     this.fromBankAccountNumber = fromBankAccountNumber;
-    this.toBankType = toBankType;
+    this.toBankName = toBankName;
     this.toBankAccountNumber = toBankAccountNumber;
     this.moneyAmount = moneyAmount;
     this.firmBankingStatus = firmBankingStatus;
@@ -43,9 +43,9 @@ public class FirmbankingRequest {
 
   public static FirmbankingRequest generateFirmbankingRequest(
       FirmBankingRequestId firmBankingRequestId,
-      FromBankType fromBankType,
+      FromBankName fromBankName,
       FromBankAccountNumber fromBankAccountNumber,
-      ToBankType toBankType,
+      ToBankName toBankName,
       ToBankAccountNumber toBankAccountNumber,
       MoneyAmount moneyAmount,
       DomainFirmBankingStatus firmBankingStatus,
@@ -54,9 +54,9 @@ public class FirmbankingRequest {
   ) {
     return FirmbankingRequest.builder()
         .firmBankingRequestId(firmBankingRequestId.firmBankingRequestId)
-        .fromBankType(fromBankType.fromBankType)
+        .fromBankName(fromBankName.fromBankName)
         .fromBankAccountNumber(fromBankAccountNumber.fromBankAccountNumber)
-        .toBankType(toBankType.toBankType)
+        .toBankName(toBankName.toBankName)
         .toBankAccountNumber(toBankAccountNumber.toBankAccountNumber)
         .moneyAmount(moneyAmount.moneyAmount)
         .firmBankingStatus(firmBankingStatus.firmBankingStatus)
@@ -68,19 +68,19 @@ public class FirmbankingRequest {
   public record FirmBankingRequestId(String firmBankingRequestId) {
   }
 
-  public record FromBankType(BankType fromBankType) {
+  public record FromBankName(String fromBankName) {
   }
 
   public record FromBankAccountNumber(String fromBankAccountNumber) {
   }
 
-  public record ToBankType(BankType toBankType) {
+  public record ToBankName(String toBankName) {
   }
 
   public record ToBankAccountNumber(String toBankAccountNumber) {
   }
 
-  public record MoneyAmount(Money moneyAmount) {
+  public record MoneyAmount(String moneyAmount) {
   }
 
   public record DomainFirmBankingStatus(FirmbankingStatus firmBankingStatus) {

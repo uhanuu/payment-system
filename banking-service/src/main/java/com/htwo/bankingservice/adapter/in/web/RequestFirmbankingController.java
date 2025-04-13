@@ -22,13 +22,10 @@ public class RequestFirmbankingController {
   public void requestFirmBanking(
       @RequestBody RequestFirmbankingRequest request
   ) {
-    final BankType fromBankType = BankType.getBankType(request.fromBankName());
-    final BankType toBankType = BankType.getBankType(request.toBankName());
-
     final RequestFirmbankingCommand command = RequestFirmbankingCommand.builder()
-        .fromBankType(fromBankType)
+        .fromBankName(request.toBankName())
         .fromBankAccountNumber(request.fromBankAccountNumber())
-        .toBankType(toBankType)
+        .toBankName(request.toBankName())
         .toBankAccountNumber(request.toBankAccountNumber())
         .moneyAmount(request.moneyAmount())
         .build();

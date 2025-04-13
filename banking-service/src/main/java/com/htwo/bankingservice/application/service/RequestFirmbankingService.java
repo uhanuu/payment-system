@@ -12,14 +12,16 @@ import com.htwo.bankingservice.application.port.in.UpdateFirmBankingUseCase;
 import com.htwo.bankingservice.application.port.out.FindRequestFirmbankingPort;
 import com.htwo.bankingservice.application.port.out.RequestExternalFirmbankingPort;
 import com.htwo.bankingservice.application.port.out.RequestFirmbankingPort;
+import com.htwo.bankingservice.domain.BankType;
 import com.htwo.bankingservice.domain.FirmbankingRequest;
 import com.htwo.bankingservice.domain.FirmbankingRequest.AggregateIdentifier;
 import com.htwo.bankingservice.domain.FirmbankingRequest.DomainFirmBankingStatus;
+import com.htwo.bankingservice.domain.FirmbankingRequest.FirmbankingRequestUuid;
 import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankAccountNumber;
-import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankType;
+import com.htwo.bankingservice.domain.FirmbankingRequest.FromBankName;
 import com.htwo.bankingservice.domain.FirmbankingRequest.MoneyAmount;
 import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankAccountNumber;
-import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankType;
+import com.htwo.bankingservice.domain.FirmbankingRequest.ToBankName;
 import com.htwo.bankingservice.domain.FirmbankingStatus;
 import com.htwo.bankingservice.domain.Money;
 import com.htwo.common.UseCase;
@@ -44,9 +46,9 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase, Upd
   public void requestFirmBanking(RequestFirmbankingCommand command) {
     Money money = new Money(command.getMoneyAmount());
     CreateRequestFirmBankingCommand createRequestFirmBankingCommand = CreateRequestFirmBankingCommand.builder()
-        .fromBankType(command.getFromBankType())
+        .fromBankType(BankType.getBankType(command.getFromBankName()))
         .fromBankAccountNumber(command.getFromBankAccountNumber())
-        .toBankType(command.getToBankType())
+        .toBankType(BankType.getBankType(command.getToBankName()))
         .toBankAccountNumber(command.getToBankAccountNumber())
         .moneyAmount(money.toStringValue())
         .build();
@@ -61,7 +63,7 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase, Upd
               final UUID firmbankingRequestUuid = UUID.randomUUID();
               final FirmbankingRequest firmbankingRequest = saveRequestFormBanking(
                   command,
-                  firmbankingRequestUuid,
+                  firmbankingRequestUuid.toString(),
                   result.toString()
               );
 
@@ -89,28 +91,27 @@ public class RequestFirmbankingService implements RequestFirmbankingUseCase, Upd
 
   private FirmbankingRequest saveRequestFormBanking(
       RequestFirmbankingCommand command,
-      UUID firmbankingRequestUuid,
+      String firmbankingRequestUuid,
       String aggregateIdentifier
   ) {
-    final Money moneyAmount = new Money(command.getMoneyAmount());
 
     return requestFirmbankingPort.createRequestFirmbanking(
-        new FromBankType(command.getFromBankType()),
+        new FromBankName(command.getFromBankName()),
         new FromBankAccountNumber(command.getFromBankAccountNumber()),
-        new ToBankType(command.getToBankType()),
+        new ToBankName(command.getToBankName()),
         new ToBankAccountNumber(command.getToBankAccountNumber()),
-        new MoneyAmount(moneyAmount),
+        new MoneyAmount(command.getMoneyAmount()),
         new DomainFirmBankingStatus(FirmbankingStatus.REQUESTED),
-        firmbankingRequestUuid,
+        new FirmbankingRequestUuid(firmbankingRequestUuid),
         new AggregateIdentifier(aggregateIdentifier)
     );
   }
 
   private FirmbankingResult requestExternalFirmbanking(RequestFirmbankingCommand command) {
     final ExternalFirmbankingRequest request = ExternalFirmbankingRequest.builder()
-        .fromBankName(command.getFromBankType().getName())
+        .fromBankName(command.getFromBankName())
         .fromBankAccountNumber(command.getFromBankAccountNumber())
-        .toBankName(command.getToBankType().getName())
+        .toBankName(command.getToBankName())
         .toBankAccountNumber(command.getToBankAccountNumber())
         .moneyAmount(command.getMoneyAmount())
         .build();

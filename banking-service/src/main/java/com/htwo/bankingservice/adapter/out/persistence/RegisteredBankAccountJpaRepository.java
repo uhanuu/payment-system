@@ -8,4 +8,6 @@ public interface RegisteredBankAccountJpaRepository extends JpaRepository<Regist
       Long registeredBankAccountId,
       String membershipId
   );
+
+  Optional<RegisteredBankAccountJpaEntity> findByMembershipId(String membershipId);
 }

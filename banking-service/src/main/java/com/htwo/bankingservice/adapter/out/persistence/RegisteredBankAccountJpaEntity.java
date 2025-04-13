@@ -27,18 +27,21 @@ public class RegisteredBankAccountJpaEntity {
   @Enumerated(EnumType.STRING)
   private BankType bankType;
   private boolean linkedStatusIsValid;
+  private String aggregateIdentifier;
 
   @Builder
   private RegisteredBankAccountJpaEntity(
       String membershipId,
       String bankAccountNumber,
       BankType bankType,
-      boolean linkedStatusIsValid
+      boolean linkedStatusIsValid,
+      String aggregateIdentifier
   ) {
     this.membershipId = membershipId;
     this.bankAccountNumber = bankAccountNumber;
     this.bankType = bankType;
     this.linkedStatusIsValid = linkedStatusIsValid;
+    this.aggregateIdentifier = aggregateIdentifier;
   }
 
   public void updateBankAccountNumber(String bankAccountNumber) {

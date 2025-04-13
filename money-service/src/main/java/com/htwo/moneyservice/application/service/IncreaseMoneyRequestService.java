@@ -1,13 +1,13 @@
 package com.htwo.moneyservice.application.service;
 
 import com.htwo.common.UseCase;
-import com.htwo.moneyservice.adapter.out.persistence.MoneyChangingRequestJpaEntity;
+import com.htwo.moneyservice.adapter.axon.command.RechargingMoneyRequestCreateCommand;
 import com.htwo.moneyservice.adapter.out.persistence.MoneyChangingRequestMapper;
 import com.htwo.moneyservice.application.port.in.IncreaseMoneyRequestCommand;
 import com.htwo.moneyservice.application.port.in.IncreaseMoneyRequestUseCase;
 import com.htwo.moneyservice.application.port.out.GetMemberMoneyPort;
 import com.htwo.moneyservice.application.port.out.GetMembershipPort;
-import com.htwo.moneyservice.application.port.out.IncreaseMemberMoney;
+import com.htwo.moneyservice.application.port.out.IncreaseMemberMoneyPort;
 import com.htwo.moneyservice.application.port.out.MoneyChangingRequestPort;
 import com.htwo.moneyservice.domain.ChangingMoneyStatus;
 import com.htwo.moneyservice.domain.ChangingMoneyType;
@@ -15,7 +15,6 @@ import com.htwo.moneyservice.domain.MemberMoney;
 import com.htwo.moneyservice.domain.MemberMoney.MembershipId;
 import com.htwo.moneyservice.domain.MembershipStatus;
 import com.htwo.moneyservice.domain.Money;
-import com.htwo.moneyservice.domain.MoneyChangingRequest;
 import com.htwo.moneyservice.domain.MoneyChangingRequest.ChangingMoneyAmount;
 import com.htwo.moneyservice.domain.MoneyChangingRequest.DomainChangingMoneyStatus;
 import com.htwo.moneyservice.domain.MoneyChangingRequest.DomainChangingMoneyType;
@@ -35,7 +34,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
   private final GetMemberMoneyPort getMemberMoneyPort;
   private final GetMembershipPort getMembershipPort;
   private final MoneyChangingRequestPort moneyChangingRequestPort;
-  private final IncreaseMemberMoney increaseMemberMoney;
+  private final IncreaseMemberMoneyPort increaseMemberMoneyPort;
   private final MoneyChangingRequestMapper mapper;
   private final CommandGateway commandGateway;
 
@@ -46,7 +45,24 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
     if (!membership.isValid()) {
       throw new IllegalArgumentException();
     }
-    final MemberMoney memberMoney = getMemberMoneyPort.getMemberMoney(new MembershipId(command.getTargetMembershipId()));
+    final MemberMoney memberMoney = getMemberMoneyPort.getMemberMoney(
+        new MembershipId(command.getTargetMembershipId()));
+
+    // Saga 시작
+    commandGateway.send(
+        new RechargingMoneyRequestCreateCommand(
+            memberMoney.getMoneyAggregateIdentifier(),
+            UUID.randomUUID().toString(),
+            command.getTargetMembershipId(),
+            Integer.parseInt(command.getMoneyAmount())
+        )
+    ).whenComplete(
+        (result, throwable) -> {
+          if (throwable != null) {
+            throw new RuntimeException();
+          }
+        }
+    );
 
     commandGateway.send(
         IncreaseMoneyRequestCommand.builder()
@@ -61,7 +77,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
             throw new RuntimeException(throwable);
           }
           final Money moneyAmount = new Money(command.getMoneyAmount());
-          increaseMemberMoney.increaseMemberMoney(
+          increaseMemberMoneyPort.increaseMemberMoney(
               new MembershipId(command.getTargetMembershipId()), moneyAmount
           );
 
